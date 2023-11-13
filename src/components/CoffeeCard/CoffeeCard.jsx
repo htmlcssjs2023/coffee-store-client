@@ -1,40 +1,36 @@
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const CoffeeCard = ({ coffee }) => {
-  const {_id, name, chef, supplier, taste, category, details, photo } = coffee;
+const CoffeeCard = ({ coffee, coffees, setCoffee }) => {
+  const { _id, name, chef, supplier, taste, category, details, photo } = coffee;
 
-  const handleDelete = _id =>{
+  const handleDelete = (_id) => {
     console.log(_id);
     Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        
         // console.log('confirm deleted');
-        fetch(`http://localhost:5000/coffees/${_id}`,{
-          method:'DELETE'
+        fetch(`http://localhost:5000/coffees/${_id}`, {
+          method: "DELETE",
         })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data);
-          if(data.deletedCount > 0){
-              Swal.fire(
-              'Deleted!',
-              'Your coffee has been deleted.',
-              'success'
-            )
-          }
-        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.deletedCount > 0) {
+              Swal.fire("Deleted!", "Your coffee has been deleted.", "success");
+            }
+            const remaiCoffees = coffees.filter( coffee => coffee._id !== _id);
+            setCoffee(remaiCoffees);
+          });
       }
-    })
-    
-  }
+    });
+  };
   return (
     <div className="card card-side bg-base-100 shadow-xl p-2">
       <figure>
@@ -63,9 +59,15 @@ const CoffeeCard = ({ coffee }) => {
         <div className="card-actions justify-end">
           <div className="btn-group btn-group-vertical space-y-4">
             <button className="btn bg-slate-400">View</button>
-            <button className="btn bg-info">Edit</button>
-            <button onClick={() => handleDelete(_id)} className="btn bg-red-500">X</button>
-            
+            <Link to={`update-coffee/${_id}`}>
+              <button className="btn bg-info">Edit</button>
+            </Link>
+            <button
+              onClick={() => handleDelete(_id)}
+              className="btn bg-red-500"
+            >
+              X
+            </button>
           </div>
         </div>
       </div>

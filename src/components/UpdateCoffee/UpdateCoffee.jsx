@@ -1,6 +1,10 @@
 import React from 'react';
+import { useLoaderData } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const UpdateCoffee = () => {
+  const coffee = useLoaderData();
+  const { _id, name, chef, supplier, taste, category, details, photo } = coffee;
     const handleUpdateCoffee = (event)=>{
         event.preventDefault();
         const form = event.target;
@@ -12,30 +16,27 @@ const UpdateCoffee = () => {
         const details = form.details.value;
         const photo = form.photo.value;
 
-        const addCoffee = {name, chef,supplier,taste,category,details,photo};
-        console.log(addCoffee);
+        const updateCoffee = {name, chef,supplier,taste,category,details,photo};
 
-        fetch('http://localhost:5000/coffees',{
-            method:"POST",
-            headers:{
-                'content-type':'application/json'
-            },
-            body:JSON.stringify(addCoffee),
-
+        fetch(`http://localhost:5000/coffee/${_id}`, {
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(updateCoffee),
         })
-        .then(res => res.json())
-        .then(data => {
+          .then((res) => res.json())
+          .then((data) => {
             console.log(data);
-            if(data.insertedId){
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Coffee is added successfully',
-                    icon: 'success',
-                    confirmButtonText: 'Okay'
-                  })
+            if (data.modifiedCount > 0) {
+              Swal.fire({
+                title: "Success!",
+                text: "Coffee is updated successfully",
+                icon: "success",
+                confirmButtonText: "Okay",
+              });
             }
-            
-        })
+          });
 
     }
     return (
@@ -57,6 +58,7 @@ const UpdateCoffee = () => {
                    name="name"
                    placeholder="Enter Coffee Name"
                    className="input input-bordered w-full"
+                   defaultValue={name}
                  />
                </label>
              </div>
@@ -71,6 +73,7 @@ const UpdateCoffee = () => {
                    name="chef"
                    placeholder="Enter Chef "
                    className="input input-bordered w-full"
+                   defaultValue={chef}
                  />
                </label>
              </div>
@@ -87,6 +90,7 @@ const UpdateCoffee = () => {
                    name="supplier"
                    placeholder="Enter Supplier Name"
                    className="input input-bordered w-full"
+                   defaultValue={supplier}
                  />
                </label>
              </div>
@@ -101,6 +105,7 @@ const UpdateCoffee = () => {
                    name="taste"
                    placeholder="Taste"
                    className="input input-bordered w-full"
+                   defaultValue={taste}
                  />
                </label>
              </div>
@@ -117,6 +122,7 @@ const UpdateCoffee = () => {
                    name="category"
                    placeholder="Category"
                    className="input input-bordered w-full"
+                   defaultValue={category}
                  />
                </label>
              </div>
@@ -131,6 +137,7 @@ const UpdateCoffee = () => {
                    name="details"
                    placeholder="Details"
                    className="input input-bordered w-full"
+                   defaultValue={details}
                  />
                </label>
              </div>
@@ -147,6 +154,7 @@ const UpdateCoffee = () => {
                    name="photo"
                    placeholder="Image URL"
                    className="input input-bordered w-full"
+                   defaultValue={photo}
                  />
                </label>
              </div>
